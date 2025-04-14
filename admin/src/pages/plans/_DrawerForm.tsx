@@ -45,7 +45,7 @@ export default function DrawerForm({
     },
   });
 
-  const planOptions: any = useModelOptions(models?.Plan, "name");
+  // const planOptions: any = useModelOptions(models?.Plan, "name");
 
   const onFinish = async (formValues: any) => {
     if (isEditing) {
@@ -137,7 +137,7 @@ export default function DrawerForm({
           </Form.Item>
 
           <Form.Item label="Plan ID" name="plan_id">
-            <Select
+            {/* <Select
               size="middle"
               allowClear
               // showSearch
@@ -151,7 +151,7 @@ export default function DrawerForm({
               //     .localeCompare((optionB?.label ?? "").toLowerCase())
               // }
               options={planOptions}
-            />
+            /> */}
           </Form.Item>
 
           <Form.Item
