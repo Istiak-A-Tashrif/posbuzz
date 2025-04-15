@@ -9,29 +9,16 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 
 // @ts-ignore
-export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
-  const KEY = `all-${model}`;
-
-  const {
-    isLoading,
-    isError,
-    data: fetchData,
-    refetch,
-  } = useQuery({
-    queryKey: [KEY],
-    queryFn: () =>
-      post(`${API_CRUD_FIND_WHERE}?model=${model}`, {
-        where: {},
-        include: {
-          permissions: {
-            include: {
-              permission: true,
-            },
-          },
-        },
-      }),
-  });
-
+export default function _TableGrid({
+  model,
+  trigger,
+  onClickEdit,
+  isLoading,
+  isError,
+  fetchData,
+  refetch,
+  ...props
+}) {
   useEffect(() => {
     if (trigger) {
       refetch();
@@ -56,26 +43,23 @@ export default function _TableGrid({ model, trigger, onClickEdit, ...props }) {
   const columns = [
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: ["consumer", "name"],
       key: "name",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "Price",
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
     },
     {
-      title: "Permissions",
-      render: (record: any) => (
-        <>
-          {record.permissions?.map((p: any) => (
-            <Tag color="blue" key={p.permission_id}>
-              {p.permission?.action}
-            </Tag>
-          ))}
-        </>
-      ),
-      key: "permissions",
+      title: "Billing Month",
+      dataIndex: "billing_month",
+      key: "billing_month",
+    },
+    {
+      title: "Reference",
+      dataIndex: "reference",
+      key: "reference",
     },
     {
       title: "Actions",
