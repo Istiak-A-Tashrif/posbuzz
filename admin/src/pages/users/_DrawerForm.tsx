@@ -13,18 +13,13 @@ export default function DrawerForm({
   onSubmitSuccess,
   isEditing,
   editedItem,
-  planOptions,
+  roleOptions,
   ...props
 }) {
   const [form] = Form.useForm();
 
-  const checkSubdomain = async (value: string) => {
-    const response = await get(`${endpoints.checkSubdomain}?value=${value}`);
-    return response.available;
-  };
-
   const createData = useMutation({
-    mutationFn: async (data) => await post(endpoints.consumer, data),
+    mutationFn: async (data) => await post(endpoints.user, data),
     onSuccess: (response) => {
       message.success("Saved Successfully");
       form.resetFields();
@@ -37,7 +32,7 @@ export default function DrawerForm({
 
   const updateData = useMutation({
     mutationFn: async (data: any) =>
-      await patch(`${endpoints.consumer}/${data.id}`, data),
+      await patch(`${endpoints.user}/${data.id}`, data),
     onSuccess: (response) => {
       message.success("Updated Successfully");
       form.resetFields();
@@ -50,12 +45,8 @@ export default function DrawerForm({
 
   const onFinish = async (formValues: any) => {
     const payload = {
-      company_name: formValues.company_name,
       name: formValues.name,
-      phone: formValues.phone,
-      address: formValues.address,
-      subdomain: formValues.subdomain,
-      plan_id: formValues.plan_id, // dropdown or input
+      role_id: formValues.role_id,
       email: formValues.email,
       password: formValues.password,
     };
@@ -78,14 +69,9 @@ export default function DrawerForm({
   useEffect(() => {
     if (isEditing && editedItem) {
       form.setFieldsValue({
-        company_name: editedItem.company_name,
-        name: editedItem.users?.find((user: any) => user.role?.name === "Admin")
-          ?.name,
+        name: editedItem.name,
         email: editedItem.email,
-        phone: editedItem.phone,
-        address: editedItem.address,
-        subdomain: editedItem.subdomain,
-        plan_id: editedItem.plan_id,
+        role_id: editedItem.role_id,
       });
     } else {
       form.resetFields();
@@ -112,50 +98,14 @@ export default function DrawerForm({
           autoComplete="off"
         >
           <Form.Item
-            label="Company Name"
-            name="company_name"
+            label="Name"
+            name="name"
             rules={[{ required: true, message: "This field is required" }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Phone" name="phone">
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Address" name="address">
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Subdomain"
-            name="subdomain"
-            rules={[
-              { required: true, message: "This field is required" },
-              {
-                validator: async (_, value) => {
-                  if (!value) return Promise.resolve(); // Skip validation if the field is empty
-                  try {
-                    const availabilty = await checkSubdomain(value);
-                    if (!availabilty) {
-                      return Promise.reject(
-                        new Error("Subdomain is already taken")
-                      );
-                    }
-                  } catch (error) {
-                    return Promise.reject(
-                      new Error("Failed to validate subdomain")
-                    );
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item label="Plan" name="plan_id">
+          <Form.Item label="Role" name="role_id">
             <Select
               size="middle"
               allowClear
@@ -169,16 +119,8 @@ export default function DrawerForm({
               //     .toLowerCase()
               //     .localeCompare((optionB?.label ?? "").toLowerCase())
               // }
-              options={planOptions}
+              options={roleOptions}
             />
-          </Form.Item>
-
-          <Form.Item
-            label="User Name"
-            name="name"
-            rules={[{ required: true, message: "This field is required" }]}
-          >
-            <Input />
           </Form.Item>
 
           <Form.Item
